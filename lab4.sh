@@ -5,7 +5,7 @@ function Help()
 	echo +-------------------------------------------------------------------------------------------------------------------+
 	echo \| Вызов:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \|
 	echo +-------------------------------------------------------------------------------------------------------------------+
-	echo \| "C:\Users\artem\OneDrive\Рабочий стол\lab4.sh" \{sourceFolder\} \{destinationFile\} \[param1\] \[param2\] \[param3\] ...\ \ \ \ \ \|
+	echo \| "C:\Users\artem\OneDrive\Рабочий стол\lab4.sh" \{sourceFolder\} \{destinationFile\} \[param1\] \[param2\] \[param3\] ...\ \ \ \ \ \ \|
 	echo +-------------------------------------------------------------------------------------------------------------------+
 	echo \| Параметры:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \|
 	echo +--------------------------------+----------------------------------------------------------------------------------+
@@ -33,9 +33,7 @@ function DoWork()
 
 	shift; shift
 
-	if [ ! -e $destinationFile ]; then
-		touch $destinationFile
-	fi
+	
 	
 	sourceFolder+="/*"
 	extensions=$*
@@ -57,11 +55,9 @@ function DoWork()
 sourceFolder=$1
 destinationFile=$2
 
-if [[ $1 = "/?" || $1 = "--help" ]]; then
+if [ "$1" = "--help" ]; then
 	Help
-fi
-
-if [ "$1" = "" ]; then
+elif [ "$1" = "" ]; then
 	echo "Два параметра обязательны!"
 
 	echo -n "Введите путь к папке-источнику: "
@@ -76,6 +72,10 @@ if [ "$1" = "" ]; then
 	echo -n "Введите путь к файлу-отчёту: "
 	read destinationFile
 
+	if [ ! -e "$destinationFile" ]; then
+		touch $destinationFile
+	fi
+
 	while [ ! -f $destinationFile ]; do
 		echo "$destinationFile не может быть файлом-отчётом!"
 		echo -n "Введите путь к файлу-отчёту: "
@@ -88,6 +88,10 @@ elif [ "$2" = "" ]; then
 	echo -n "Введите путь к файлу-отчёту: "
 	read destinationFile
 
+	if [ ! -e "$destinationFile" ]; then
+		touch $destinationFile
+	fi
+
 	while [ ! -f $destinationFile ]; do
 		echo "$destinationFile не может быть файлом-отчётом!"
 		echo -n "Введите путь к файлу-отчёту: "
@@ -95,7 +99,7 @@ elif [ "$2" = "" ]; then
 	done
 fi
 
-if [ "$3" = "" ]; then
+if [[ "$3" = "" && "$1" != "--help" ]]; then
 	echo "Не указано ни одного расширения файла!"
 	yes="y"
 	extensions=""
