@@ -41,7 +41,7 @@ function DoWork()
 	for ext in $extensions; do
 		count=0
 		for file in $sourceFolder; do
-			curExt="${file: -4}"
+			curExt="${file##*.}"
 			if [ "$curExt" = "$ext" ]; then
 				count=$(( $count + 1 ))
 			fi
@@ -58,8 +58,6 @@ destinationFile=$2
 if [ "$1" = "--help" ]; then
 	Help
 elif [ "$1" = "" ]; then
-	echo "Два параметра обязательны!"
-
 	echo -n "Введите путь к папке-источнику: "
 	read sourceFolder
 
@@ -68,23 +66,9 @@ elif [ "$1" = "" ]; then
 		echo -n "Введите путь к папке-источнику: "
 		read sourceFolder
 	done
+fi
 
-	echo -n "Введите путь к файлу-отчёту: "
-	read destinationFile
-
-	if [ ! -e "$destinationFile" ]; then
-		touch $destinationFile
-	fi
-
-	while [ ! -f $destinationFile ]; do
-		echo "$destinationFile не может быть файлом-отчётом!"
-		echo -n "Введите путь к файлу-отчёту: "
-		read destinationFile
-	done
-
-elif [ "$2" = "" ]; then
-	echo "Два параметра обязательны!"
-
+if [ "$2" = "" ]; then
 	echo -n "Введите путь к файлу-отчёту: "
 	read destinationFile
 
@@ -100,7 +84,6 @@ elif [ "$2" = "" ]; then
 fi
 
 if [[ "$3" = "" && "$1" != "--help" ]]; then
-	echo "Не указано ни одного расширения файла!"
 	yes="y"
 	extensions=""
 	while [ "$yes" = "y" ]; do
